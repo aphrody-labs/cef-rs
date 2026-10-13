@@ -4,6 +4,10 @@ pub fn get_manifest_dir() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
 }
 
+pub fn get_out_dir() -> PathBuf {
+    PathBuf::from(env!("OUT_DIR"))
+}
+
 pub fn get_cef_root(os: &str, arch: &str) -> PathBuf {
     env::var(format!("CEF_PATH_{os}_{arch}"))
         .map(PathBuf::from)
