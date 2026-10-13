@@ -5,7 +5,7 @@ extern crate thiserror;
 
 use clap::Parser;
 use download_cef::DEFAULT_TARGET;
-use std::{fs, io::Read, path::Path, sync::OnceLock};
+use std::{fs, io::Read, path::Path};
 
 #[derive(Debug, Error)]
 pub enum Error {
@@ -32,33 +32,13 @@ mod parse_tree;
 mod resources;
 mod upgrade;
 
-fn default_version() -> &'static str {
-    static DEFAULT_VERSION: OnceLock<String> = OnceLock::new();
-    DEFAULT_VERSION
-        .get_or_init(|| download_cef::default_version(env!("CARGO_PKG_VERSION")))
-        .as_str()
-}
-
-fn default_download_url() -> &'static str {
-    static DEFAULT_DOWNLOAD_URL: OnceLock<String> = OnceLock::new();
-    DEFAULT_DOWNLOAD_URL
-        .get_or_init(download_cef::default_download_url)
-        .as_str()
-}
-
 #[derive(Parser, Debug)]
 #[command(about, long_about = None)]
 struct Args {
     #[arg(short, long)]
-    download: bool,
-    #[arg(short, long)]
     bindgen: bool,
     #[arg(short, long, default_value = DEFAULT_TARGET)]
     target: String,
-    #[arg(short, long, default_value = default_version())]
-    version: String,
-    #[arg(short, long, default_value = default_download_url())]
-    mirror_url: String,
 }
 
 fn main() -> Result<()> {
@@ -66,10 +46,6 @@ fn main() -> Result<()> {
     let target = args.target.as_str();
 
     if args.bindgen {
-        if args.download {
-            let _ = upgrade::download(args.mirror_url.as_str(), target, args.version.as_str());
-        }
-
         upgrade::sys_bindgen(target)?;
     }
 

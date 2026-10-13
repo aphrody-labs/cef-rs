@@ -2,7 +2,7 @@ use crate::dirs;
 use bindgen::callbacks::{DeriveInfo, ParseCallbacks, TypeKind};
 use std::{
     collections::BTreeSet,
-    path::{Path, PathBuf},
+    path::Path,
     process::Command,
     sync::{Arc, Mutex},
 };
@@ -31,17 +31,6 @@ const OPAQUE_STRING_COPY_HANDLES: &[&str] = &[
 ];
 
 const OPAQUE_X11_COPY_HANDLES: &[&str] = &["_XEvent", "_XDisplay"];
-
-pub fn download(url: &str, target: &str, version: &str) -> PathBuf {
-    assert!(TARGETS.contains(&target), "unsupported target {target}");
-
-    let archive =
-        download_cef::download_target_archive_from(url, target, version, dirs::get_out_dir(), true)
-            .expect("download failed");
-
-    download_cef::extract_target_archive(target, &archive, dirs::get_out_dir(), true)
-        .expect("extraction failed")
-}
 
 pub fn sys_bindgen(target: &str) -> crate::Result<()> {
     assert!(TARGETS.contains(&target), "unsupported target {target}");
@@ -87,6 +76,7 @@ fn bindgen(target: &str, cef_path: &Path) -> crate::Result<()> {
         .clang_args([
             format!("-I{}", cef_path.display()),
             format!("--target={target}"),
+            "-DCEF_API_VERSION=CEF_API_VERSION_LAST".to_string(),
         ]);
 
     if target.contains("windows") {
