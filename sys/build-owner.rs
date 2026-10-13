@@ -5,7 +5,7 @@ use std::{fs, path::{Component, Path, PathBuf}};
 
 const CHROMIUM_REVISION: &str = "ce0615a76d6347f1914d673f1da66285b328d494";
 const CHROMIUM_VERSION: &str = "157.0.8099.0";
-const CEF_REVISION: &str = "f04144327bbee3818d4b594c2a812a1022861ae0";
+const CEF_REVISION: &str = "d2209bae80c55caecd5b050e8b403e8c43f62a5d";
 
 fn read_json(path: &Path) -> anyhow::Result<Value> {
     println!("cargo::rerun-if-changed={}", path.display());
